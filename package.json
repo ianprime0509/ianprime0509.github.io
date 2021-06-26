@@ -1,0 +1,27 @@
+{
+  "name": "ianprime0509.github.io",
+  "version": "1.0.0",
+  "description": "My personal website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ianprime0509/ianprime0509.github.io.git"
+  },
+  "author": {
+    "name": "Ian Johnson",
+    "email": "ian@ianjohnson.xyz"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ianprime0509/ianprime0509.github.io/issues"
+  },
+  "homepage": "https://github.com/ianprime0509/ianprime0509.github.io#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^0.12.1",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.1",
+    "prettier": "2.3.2"
+  }
+}

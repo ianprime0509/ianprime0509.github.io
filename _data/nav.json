@@ -1,0 +1,18 @@
+[
+  {
+    "text": "Home",
+    "href": "/"
+  },
+  {
+    "text": "Projects",
+    "href": "/projects/"
+  },
+  {
+    "text": "Posts",
+    "href": "/posts/"
+  },
+  {
+    "text": "GitHub",
+    "href": "https://github.com/ianprime0509"
+  }
+]
