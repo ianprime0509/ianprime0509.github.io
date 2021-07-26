@@ -4,6 +4,8 @@ module.exports = (config) => {
   config.addPlugin(syntaxHighlight);
 
   config.addPassthroughCopy("CNAME");
+  config.addPassthroughCopy("favicon.png");
+  config.addPassthroughCopy("favicon.svg");
   config.addPassthroughCopy("css");
   config.addPassthroughCopy("posts/**/img/*");
   config.addPassthroughCopy("projects/**/img/*");
