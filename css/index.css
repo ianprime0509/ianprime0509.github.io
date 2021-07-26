@@ -87,6 +87,7 @@ ol.post-list {
 ol.post-list > li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 code {
