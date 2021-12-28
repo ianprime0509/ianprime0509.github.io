@@ -2,9 +2,9 @@
 layout: layouts/main.njk
 title: Posts
 ---
+
 <header>
   <h1>Posts</h1>
 </header>
 
-{% set posts = collections.posts | lastN(20) %}
-{% include "post-list.njk" %}
+{% set posts = collections.posts | lastN(20) %} {% include "post-list.njk" %}

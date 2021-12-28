@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: npm install
-      - run: npx @11ty/eleventy
+      - run: npm run build
       - uses: crazy-max/ghaction-github-pages@v2
         if: success()
         with:

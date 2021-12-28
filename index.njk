@@ -2,6 +2,7 @@
 title: Ian Johnson
 layout: layouts/main.njk
 ---
+
 <header>
   <h1>Ian Johnson</h1>
 
@@ -14,8 +15,7 @@ layout: layouts/main.njk
 </header>
 
 <section>
-<h1>Recent posts</h1>
+  <h1>Recent posts</h1>
 
-{% set posts = collections.posts | lastN(5) %}
-{% include "post-list.njk" %}
+  {% set posts = collections.posts | lastN(5) %} {% include "post-list.njk" %}
 </section>
