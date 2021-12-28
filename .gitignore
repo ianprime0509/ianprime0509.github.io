@@ -1,3 +1,4 @@
 .vscode
 _site/
+css/prism-theme.css
 node_modules/

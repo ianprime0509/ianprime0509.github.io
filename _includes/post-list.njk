@@ -1,8 +1,8 @@
 <ol class="post-list">
   {% for post in posts | reverse %}
-    <li>
-      <a href="{{ post.url }}">{{ post.data.title }}</a>
-      <time datetime="{{ post.date | isoDate }}">{{ post.date | isoDate }}</time>
-    </li>
+  <li>
+    <a href="{{ post.url }}">{{ post.data.title }}</a>
+    <time datetime="{{ post.date | isoDate }}">{{ post.date | isoDate }}</time>
+  </li>
   {% endfor %}
 </ol>

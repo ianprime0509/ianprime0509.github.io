@@ -1,11 +1,10 @@
 {
   "name": "ianprime0509.github.io",
-  "version": "1.0.0",
   "description": "My personal website",
-  "main": "index.js",
   "scripts": {
     "build": "eleventy",
     "fmt": "prettier --write .",
+    "prepare": "node _helpers/make-theme.mjs ./node_modules/prism-themes/themes/prism-one-light.css ./node_modules/prism-themes/themes/prism-one-dark.css ./css/prism-theme.css",
     "serve": "eleventy --serve"
   },
   "repository": {
@@ -21,9 +20,10 @@
     "url": "https://github.com/ianprime0509/ianprime0509.github.io/issues"
   },
   "homepage": "https://github.com/ianprime0509/ianprime0509.github.io#readme",
-  "devDependencies": {
+  "dependencies": {
     "@11ty/eleventy": "^0.12.1",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.3",
-    "prettier": "2.5.1"
+    "prettier": "2.5.1",
+    "prism-themes": "^1.9.0"
   }
 }
