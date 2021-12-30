@@ -1,7 +1,9 @@
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
+const jsx = require("eleventy-plugin-static-jsx");
 
 module.exports = (config) => {
   config.addPlugin(syntaxHighlight);
+  config.addPlugin(jsx);
 
   config.addPassthroughCopy("CNAME");
   config.addPassthroughCopy("favicon.png");

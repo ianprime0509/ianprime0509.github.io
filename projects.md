@@ -1,6 +1,6 @@
 ---
 title: Projects
-layout: layouts/standalone.njk
+layout: layouts/standalone.jsx
 ---
 
 # Temperatune

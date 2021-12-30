@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/ianprime0509/ianprime0509.github.io#readme",
   "dependencies": {
-    "@11ty/eleventy": "^0.12.1",
+    "@11ty/eleventy": "^1.0.0-beta.9",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.3",
+    "eleventy-plugin-static-jsx": "^1.0.0-alpha.1",
     "prettier": "2.5.1",
-    "prism-themes": "^1.9.0"
+    "prism-themes": "^1.9.0",
+    "static-jsx": "^1.0.0-alpha.2"
   }
 }
