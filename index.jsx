@@ -5,7 +5,7 @@ export const data = {
   layout: "layouts/main.jsx",
 };
 
-export function render({ collections }) {
+export default function render({ collections }) {
   return (
     <>
       <header>

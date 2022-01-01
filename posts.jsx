@@ -5,7 +5,7 @@ export const data = {
   title: "Posts",
 };
 
-export function render({ collections }) {
+export default function render({ collections }) {
   return (
     <>
       <header>

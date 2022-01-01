@@ -1,6 +1,6 @@
 import { RawHtml } from "static-jsx";
 
-export function render({ children, nav, page, title, today }) {
+export default function render({ children, nav, page, title, today }) {
   return (
     <>
       {new RawHtml("<!DOCTYPE html>")}

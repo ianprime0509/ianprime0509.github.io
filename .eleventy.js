@@ -1,17 +1,19 @@
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const jsx = require("eleventy-plugin-static-jsx");
 
-module.exports = (config) => {
-  config.addPlugin(syntaxHighlight);
-  config.addPlugin(jsx);
+module.exports = (eleventyConfig) => {
+  eleventyConfig.addPlugin(syntaxHighlight);
+  eleventyConfig.addPlugin(jsx);
 
-  config.addPassthroughCopy("CNAME");
-  config.addPassthroughCopy("favicon.png");
-  config.addPassthroughCopy("favicon.svg");
-  config.addPassthroughCopy("css");
-  config.addPassthroughCopy("posts/**/img/*");
-  config.addPassthroughCopy("projects/**/img/*");
+  eleventyConfig.addPassthroughCopy("CNAME");
+  eleventyConfig.addPassthroughCopy("favicon.png");
+  eleventyConfig.addPassthroughCopy("favicon.svg");
+  eleventyConfig.addPassthroughCopy("css");
+  eleventyConfig.addPassthroughCopy("posts/**/img/*");
+  eleventyConfig.addPassthroughCopy("projects/**/img/*");
 
-  config.addFilter("isoDate", (date) => date.toISOString().substring(0, 10));
-  config.addFilter("lastN", (items, n) => items.slice(-n));
+  eleventyConfig.addFilter("isoDate", (date) =>
+    date.toISOString().substring(0, 10)
+  );
+  eleventyConfig.addFilter("lastN", (items, n) => items.slice(-n));
 };

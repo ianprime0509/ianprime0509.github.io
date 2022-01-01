@@ -2,7 +2,7 @@ export const data = {
   layout: "layouts/main.jsx",
 };
 
-export function render({ children, title }) {
+export default function render({ children, title }) {
   return (
     <>
       <header>
