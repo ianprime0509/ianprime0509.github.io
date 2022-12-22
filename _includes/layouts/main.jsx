@@ -42,6 +42,9 @@ export default function render({ children, nav, page, title, today }) {
             <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
               (CC BY 4.0)
             </a>
+            <a rel="me" href="https://mstdn.social/@ianprime0509">
+              <img src="/img/mastodon-logo.svg" alt="Mastodon" />
+            </a>
           </footer>
         </body>
       </html>

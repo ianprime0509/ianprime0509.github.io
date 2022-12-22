@@ -9,6 +9,7 @@ module.exports = (eleventyConfig) => {
   eleventyConfig.addPassthroughCopy("favicon.png");
   eleventyConfig.addPassthroughCopy("favicon.svg");
   eleventyConfig.addPassthroughCopy("css");
+  eleventyConfig.addPassthroughCopy("img");
   eleventyConfig.addPassthroughCopy("posts/**/img/*");
   eleventyConfig.addPassthroughCopy("projects/**/img/*");
 

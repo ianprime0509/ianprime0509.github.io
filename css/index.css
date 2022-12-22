@@ -153,8 +153,19 @@ footer {
   border-top: 1px solid grey;
   padding-top: 0.5rem;
 
+  max-height: 2rem;
   width: 100ch;
   max-width: 100%;
 
   text-align: center;
+}
+
+footer img {
+  display: inline;
+
+  margin: 0 0.5rem;
+
+  max-height: 100%;
+
+  vertical-align: middle;
 }
