@@ -5,16 +5,16 @@ date: 2020-12-05
 
 _This article is the second in a pair of articles covering my experience using
 Go to develop a GNOME application. If you are interested in the motivation
-behind the project and the initial setup, see the [first
-article](./gui-with-go.html)._
+behind the project and the initial setup, see the
+[first article](./gui-with-go.html)._
 
 One of the most useful features of the GNOME desktop is its integrated,
 universal search feature: from the "Activities" menu, which can be opened by
 pressing the Windows/Super key, typing anything will begin a search for
 applications, files, settings and more matching the input. This search feature
-is extensible: applications can register themselves as [search
-providers](https://developer.gnome.org/SearchProvider/) so that GNOME will ask
-them for application-specific results matching the user's query.
+is extensible: applications can register themselves as
+[search providers](https://developer.gnome.org/SearchProvider/) so that GNOME
+will ask them for application-specific results matching the user's query.
 
 For [GJisho](https://github.com/ianprime0509/gjisho), a Japanese-English
 dictionary application, such a feature makes it very easy to look up a word
@@ -37,18 +37,19 @@ easy to access.
 
 # Implementing a GNOME search provider
 
-The [GNOME documentation for search
-providers](https://developer.gnome.org/SearchProvider/) gives an overview of
-what's needed to integrate search provider functionality into an application.
+The
+[GNOME documentation for search providers](https://developer.gnome.org/SearchProvider/)
+gives an overview of what's needed to integrate search provider functionality
+into an application.
 
 ## D-Bus activation
 
-First, the application must be [D-Bus
-activatable](https://wiki.gnome.org/HowDoI/DBusApplicationLaunching).
+First, the application must be
+[D-Bus activatable](https://wiki.gnome.org/HowDoI/DBusApplicationLaunching).
 [D-Bus](https://www.freedesktop.org/wiki/Software/dbus/) is a message bus
 system: it is a system that allows applications to communicate with each other.
-Applications that are D-Bus activatable implement a [D-Bus
-interface](https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s08.html)
+Applications that are D-Bus activatable implement a
+[D-Bus interface](https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s08.html)
 that allows them to be "activated" through a D-Bus method. Usually, an
 application will implement this activation method by opening a new or existing
 window. What this means is that the application can be launched in the
@@ -120,9 +121,9 @@ Name=xyz.ianjohnson.GJisho
 Exec=/usr/local/bin/gjisho --gapplication-service
 ```
 
-The application's [desktop
-file](https://specifications.freedesktop.org/desktop-entry-spec/latest/), which
-must be named `$APP_ID.desktop` and placed in `/usr/share/applications` or
+The application's
+[desktop file](https://specifications.freedesktop.org/desktop-entry-spec/latest/),
+which must be named `$APP_ID.desktop` and placed in `/usr/share/applications` or
 `/usr/local/share/applications`, needs a property `DBusActivatable=true`.
 GJisho's desktop file, named `xyz.ianjohnson.GJisho.desktop`, has the following
 contents (again assuming installation as `/usr/local/bin/gjisho`):
@@ -144,10 +145,10 @@ ready to move on to implementing the search provider interface.
 
 ## Search provider interface
 
-As the [GNOME search provider
-documentation](https://developer.gnome.org/SearchProvider/) explains, we need to
-implement the `org.gnome.Shell.SearchProvider2` D-Bus interface. On a GNOME
-system, you can find the interface definition at
+As the
+[GNOME search provider documentation](https://developer.gnome.org/SearchProvider/)
+explains, we need to implement the `org.gnome.Shell.SearchProvider2` D-Bus
+interface. On a GNOME system, you can find the interface definition at
 `/usr/share/dbus-1/interfaces/org.gnome.ShellSearchProvider2.xml`, and it is
 also reproduced on the aforementioned documentation page.
 
@@ -206,8 +207,8 @@ interface.
 ### Using the search provider skeleton
 
 I'm certainly not a GTK or GLib expert, so I used the example code on the search
-provider documentation page along with the [source for Nautilus' search provider
-implementation](https://gitlab.gnome.org/GNOME/nautilus/blob/master/src/nautilus-shell-search-provider.c)
+provider documentation page along with the
+[source for Nautilus' search provider implementation](https://gitlab.gnome.org/GNOME/nautilus/blob/master/src/nautilus-shell-search-provider.c)
 as references when figuring out how to use the generated implementation skeleton
 and integrate it with my application.
 
@@ -510,7 +511,8 @@ GJisho's GNOME search integration is one of its most useful features to me, and
 one that I'm very glad I added. The implementation, however, required a lot of
 boilerplate and interaction with C code, and hence was not an easy task,
 especially for someone not too familiar with GLib. It would be interesting to
-see if a tool using [GObject
-introspection](https://gi.readthedocs.io/en/latest/) would be able to generate
-Go bindings for GTK and friends (such as GDBus) and provide easy ways to define
-custom GObject subclasses to allow more seamless integration with GTK and GLib.
+see if a tool using
+[GObject introspection](https://gi.readthedocs.io/en/latest/) would be able to
+generate Go bindings for GTK and friends (such as GDBus) and provide easy ways
+to define custom GObject subclasses to allow more seamless integration with GTK
+and GLib.

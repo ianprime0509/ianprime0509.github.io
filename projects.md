@@ -8,12 +8,12 @@ layout: layouts/standalone.jsx
 ![A screenshot of the main Temperatune interface](./img/temperatune.png)
 
 [Temperatune](https://ianprime0509.github.io/temperatune) is a tuner which
-supports different [musical
-temperaments](https://en.wikipedia.org/wiki/Musical_temperament). It is designed
-to be easy to use and mobile-friendly. It is powered by
+supports different
+[musical temperaments](https://en.wikipedia.org/wiki/Musical_temperament). It is
+designed to be easy to use and mobile-friendly. It is powered by
 [Pitchy](https://github.com/ianprime0509/pitchy), a pitch-detection library I
-wrote in TypeScript using the [McLeod pitch
-method](http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf).
+wrote in TypeScript using the
+[McLeod pitch method](http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf).
 
 # GJisho
 

@@ -4,9 +4,9 @@ date: 2020-11-21
 ---
 
 _This post is the first in a pair of articles covering my experience using Go to
-develop a GNOME application. There is a [second
-article](./gui-with-go-search-provider.html) covering how I integrated my
-application with GNOME search._
+develop a GNOME application. There is a
+[second article](./gui-with-go-search-provider.html) covering how I integrated
+my application with GNOME search._
 
 # Project idea and motivation
 
@@ -16,17 +16,18 @@ create a simple Japanese-English dictionary that integrated with the rest of the
 system.
 
 Fortunately, the most difficult part of creating the dictionary application had
-already been done for me: the [Electronic Dictionary Research and Development
-Group (EDRDG)](https://www.edrdg.org/wiki/index.php/Main_Page) has very
-generously compiled and maintained several freely available files that provide
-the underlying data for a Japanese-English dictionary (such as JMdict, the core
-dictionary file, and KANJIDIC, the Kanji reading and meaning dictionary file).
-Combined with the [Tatoeba project (also known as the Tanaka
-Corpus)](https://www.edrdg.org/wiki/index.php/Tanaka_Corpus) for example
-sentences and the [KanjiVG project](https://github.com/KanjiVG/kanjivg) for
-kanji stroke order data, these files provided all the data necessary to create a
-full-featured dictionary application with features similar to others available
-already (most of which probably use the same underlying data).
+already been done for me: the
+[Electronic Dictionary Research and Development Group (EDRDG)](https://www.edrdg.org/wiki/index.php/Main_Page)
+has very generously compiled and maintained several freely available files that
+provide the underlying data for a Japanese-English dictionary (such as JMdict,
+the core dictionary file, and KANJIDIC, the Kanji reading and meaning dictionary
+file). Combined with the
+[Tatoeba project (also known as the Tanaka Corpus)](https://www.edrdg.org/wiki/index.php/Tanaka_Corpus)
+for example sentences and the
+[KanjiVG project](https://github.com/KanjiVG/kanjivg) for kanji stroke order
+data, these files provided all the data necessary to create a full-featured
+dictionary application with features similar to others available already (most
+of which probably use the same underlying data).
 
 With that out of the way, and with the GUI toolkit (GTK) chosen by my target
 platform (GNOME), the last major question before starting development was which
@@ -90,20 +91,21 @@ showing the first entry in the file (omitting the DOCTYPE and comments):
 I wanted to avoid having to write a lot of manual code to parse the structure of
 each entry. Fortunately, Rust has
 [`serde_xml_rs`](https://crates.io/crates/serde-xml-rs), which provides a way of
-mapping XML to Rust types using the popular [`serde`
-framework](https://crates.io/crates/serde). Unfortunately, there did not seem to
-be a natural way of using it in a streaming manner to avoid reading the entire
-(>100MB) file into memory and then parsing it (which itself would lead to even
-higher memory overhead for all the entry objects that would be allocated).
+mapping XML to Rust types using the popular
+[`serde` framework](https://crates.io/crates/serde). Unfortunately, there did
+not seem to be a natural way of using it in a streaming manner to avoid reading
+the entire (>100MB) file into memory and then parsing it (which itself would
+lead to even higher memory overhead for all the entry objects that would be
+allocated).
 
 On the other hand, Go's [`xml` package](https://golang.org/pkg/encoding/xml/)
-makes this very easy to do by providing a [`DecodeElement`
-method](https://golang.org/pkg/encoding/xml/#Decoder.DecodeElement) that accepts
-the starting tag of an element as a parameter: this way, we can use the
-`Decoder` to read tokens until we hit the first `entry`, call `DecodeElement` to
-decode a single `Entry` object and then proceed by reading until the next
-`entry` and calling `DecodeElement` again. The whole process ends up looking
-like this:
+makes this very easy to do by providing a
+[`DecodeElement` method](https://golang.org/pkg/encoding/xml/#Decoder.DecodeElement)
+that accepts the starting tag of an element as a parameter: this way, we can use
+the `Decoder` to read tokens until we hit the first `entry`, call
+`DecodeElement` to decode a single `Entry` object and then proceed by reading
+until the next `entry` and calling `DecodeElement` again. The whole process ends
+up looking like this:
 
 ```go
 decoder := xml.NewDecoder(bufio.NewReader(jmdict))
@@ -223,15 +225,15 @@ func getAppComponents(builder *gtk.Builder) {
 ```
 
 Then, to initialize all the `appComponents` to their proper values, I just use
-`getAppComponents(builder)`. This is similar to the [`Builder.GetSignals`
-method](https://pkg.go.dev/github.com/gotk3/gotk3/gtk#Builder.ConnectSignals)
+`getAppComponents(builder)`. This is similar to the
+[`Builder.GetSignals` method](https://pkg.go.dev/github.com/gotk3/gotk3/gtk#Builder.ConnectSignals)
 provided by gotk3 to connect signals defined in the UI file to Go functions
 defined as values of a `map[string]interface{}`.
 
 For the rest of the application, most of the Go bindings translate quite
-naturally from the underlying C API, so the [main GTK
-documentation](https://developer.gnome.org/gtk3/stable/index.html) remains an
-invaluable source of information even for Go programmers.
+naturally from the underlying C API, so the
+[main GTK documentation](https://developer.gnome.org/gtk3/stable/index.html)
+remains an invaluable source of information even for Go programmers.
 
 Here is a screenshot of what the application looks like in action:
 

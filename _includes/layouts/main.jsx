@@ -37,7 +37,11 @@ export default function render({ children, nav, page, title, today }) {
               (CC BY 4.0)
             </a>
             <a rel="me" href="https://mstdn.social/@ianprime0509">
-              <img src="/img/mastodon-logo.svg" alt="Mastodon" class="invert-dark" />
+              <img
+                src="/img/mastodon-logo.svg"
+                alt="Mastodon"
+                class="invert-dark"
+              />
             </a>
           </footer>
         </body>
