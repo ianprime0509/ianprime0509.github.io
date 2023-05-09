@@ -36,6 +36,10 @@ html {
     --color-text-link: var(--color-text-link-dark);
     --color-text-link-visited: var(--color-text-link-visited-dark);
   }
+
+  .invert-dark {
+    filter: invert();
+  }
 }
 
 body {
