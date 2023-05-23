@@ -11,6 +11,8 @@ export default function render({ collections }) {
       <header>
         <h1>Ian Johnson</h1>
 
+        <img class="rounded small" src="img/me.jpg" alt="A picture of me" />
+
         <p>
           I am a software developer. I mainly work in Java professionally, but
           enjoy experimenting with different technologies outside work. You can
