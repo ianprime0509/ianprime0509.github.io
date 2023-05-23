@@ -15,6 +15,18 @@ designed to be easy to use and mobile-friendly. It is powered by
 wrote in TypeScript using the
 [McLeod pitch method](http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf).
 
+# Nonograms
+
+![A screenshot of Nonograms displaying a completed puzzle of a smiley face](./img/nonograms.png)
+
+[Nonograms](https://github.com/ianprime0509/nonograms) is a
+[nonogram](https://en.wikipedia.org/wiki/Nonogram) game designed for
+[GNOME](https://en.wikipedia.org/wiki/GNOME) and written in
+[Zig](https://ziglang.org/) using
+[zig-gobject](https://github.com/ianprime0509/zig-gobject) (another of my
+projects). It currently serves a dual role as a fun game project and as a
+testing ground of a "real project" for zig-gobject.
+
 # GJisho
 
 ![A screenshot of GJisho, showing a Japanese word displayed with
