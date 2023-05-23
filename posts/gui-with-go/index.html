@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link href="/css/index.css" rel="stylesheet"/><link href="/css/prism-theme.css" rel="stylesheet"/><link rel="icon" type="image/png" href="/favicon.png"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><title>GUI with Go: motivation and initial setup</title></head><body><nav><ul><li><a href="/">Home</a></li><li><a href="/projects/">Projects</a></li><li><a href="/posts/">Posts</a></li><li><a href="https://github.com/ianprime0509">GitHub</a></li></ul></nav><main><header><h1>GUI with Go: motivation and initial setup</h1></header><article><p><em>This post is the first in a pair of articles covering my experience using Go to
+develop a GNOME application. There is a
+<a href="./gui-with-go-search-provider.html">second article</a> covering how I integrated
+my application with GNOME search.</em></p>
+<h1>Project idea and motivation</h1>
+<p>One of my recent projects is <a href="https://github.com/ianprime0509/gjisho">GJisho</a>, a
+Japanese-English dictionary application for GNOME. I like GNOME, and I wanted to
+create a simple Japanese-English dictionary that integrated with the rest of the
+system.</p>
+<p>Fortunately, the most difficult part of creating the dictionary application had
+already been done for me: the
+<a href="https://www.edrdg.org/wiki/index.php/Main_Page">Electronic Dictionary Research and Development Group (EDRDG)</a>
+has very generously compiled and maintained several freely available files that
+provide the underlying data for a Japanese-English dictionary (such as JMdict,
+the core dictionary file, and KANJIDIC, the Kanji reading and meaning dictionary
+file). Combined with the
+<a href="https://www.edrdg.org/wiki/index.php/Tanaka_Corpus">Tatoeba project (also known as the Tanaka Corpus)</a>
+for example sentences and the
+<a href="https://github.com/KanjiVG/kanjivg">KanjiVG project</a> for kanji stroke order
+data, these files provided all the data necessary to create a full-featured
+dictionary application with features similar to others available already (most
+of which probably use the same underlying data).</p>
+<p>With that out of the way, and with the GUI toolkit (GTK) chosen by my target
+platform (GNOME), the last major question before starting development was which
+language to use for the project.</p>
+<h1>Why Go?</h1>
+<p>GTK has <a href="https://www.gtk.org/docs/language-bindings/">bindings</a> for many
+languages. While evaluating the options, I was able to rule most of them out
+immediately:</p>
+<ul>
+<li><strong>C</strong>: certainly the most supported language for GTK, given that GTK itself is
+written in C. However, it seemed too low-level for the average GUI
+application, and other languages such as Rust would be safer and easier to
+deal with.</li>
+<li><strong>C++</strong>: has good performance and is well supported, but I've never really
+liked C++ as it seemed overly complex to me and, in my previous experience
+with it, I haven't really enjoyed using it.</li>
+<li><strong>D</strong>, <strong>Perl</strong>, <strong>Vala</strong>: I don't know much about any of these languages and
+didn't particularly want to learn a completely new language for this project.
+Vala seems potentially interesting, though.</li>
+<li><strong>JavaScript</strong>, <strong>Python</strong>: well supported and quite popular, but I don't
+particularly like writing anything but small projects in languages without
+static type-checking. If there were a way to use TypeScript with GTK, that
+would be a possibility (but I haven't found any such support yet).</li>
+</ul>
+<p>That left two main candidates: Go and Rust. I'd used both languages before and
+enjoyed them, so I decided to investigate each more deeply with a focus on how
+to implement this particular project.</p>
+<p>I initially gravitated towards Rust, seeing that it seemed to have more
+community support, but while attempting to develop an initial prototype, I found
+that Go had much better support for one of the core requirements of the
+application, parsing the JMdict and KANJIDIC XML files.</p>
+<p>Both JMdict and KANJIDIC are provided as XML files (encoded in UTF-8,
+fortunately), each with a large number of &quot;entry&quot; elements under the root
+element (one for each word or kanji, respectively). Here's a snippet of JMdict,
+showing the first entry in the file (omitting the DOCTYPE and comments):</p>
+<pre class="language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>JMdict</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>entry</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ent_seq</span><span class="token punctuation">></span></span>1000000<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ent_seq</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>r_ele</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>reb</span><span class="token punctuation">></span></span>ヽ<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>reb</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>r_ele</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sense</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pos</span><span class="token punctuation">></span></span><span class="token entity named-entity" title="&unc;">&amp;unc;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pos</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>xref</span><span class="token punctuation">></span></span>一の字点<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>xref</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>gloss</span> <span class="token attr-name">g_type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>expl<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>repetition mark in katakana<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>gloss</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sense</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sense</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>gloss</span> <span class="token attr-name"><span class="token namespace">xml:</span>lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dut<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>hitotsuten 一つ点: teken dat herhaling van het voorafgaande katakana-schriftteken aangeeft<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>gloss</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sense</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>entry</span><span class="token punctuation">></span></span>
+<span class="token comment">&lt;!-- 188467 more entries follow... --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>JMdict</span><span class="token punctuation">></span></span></code></pre>
+<p>I wanted to avoid having to write a lot of manual code to parse the structure of
+each entry. Fortunately, Rust has
+<a href="https://crates.io/crates/serde-xml-rs"><code>serde_xml_rs</code></a>, which provides a way of
+mapping XML to Rust types using the popular
+<a href="https://crates.io/crates/serde"><code>serde</code> framework</a>. Unfortunately, there did
+not seem to be a natural way of using it in a streaming manner to avoid reading
+the entire (&gt;100MB) file into memory and then parsing it (which itself would
+lead to even higher memory overhead for all the entry objects that would be
+allocated).</p>
+<p>On the other hand, Go's <a href="https://golang.org/pkg/encoding/xml/"><code>xml</code> package</a>
+makes this very easy to do by providing a
+<a href="https://golang.org/pkg/encoding/xml/#Decoder.DecodeElement"><code>DecodeElement</code> method</a>
+that accepts the starting tag of an element as a parameter: this way, we can use
+the <code>Decoder</code> to read tokens until we hit the first <code>entry</code>, call
+<code>DecodeElement</code> to decode a single <code>Entry</code> object and then proceed by reading
+until the next <code>entry</code> and calling <code>DecodeElement</code> again. The whole process ends
+up looking like this:</p>
+<pre class="language-go"><code class="language-go">decoder <span class="token operator">:=</span> xml<span class="token punctuation">.</span><span class="token function">NewDecoder</span><span class="token punctuation">(</span>bufio<span class="token punctuation">.</span><span class="token function">NewReader</span><span class="token punctuation">(</span>jmdict<span class="token punctuation">)</span><span class="token punctuation">)</span>
+decoder<span class="token punctuation">.</span>Entity <span class="token operator">=</span> entities
+tok<span class="token punctuation">,</span> err <span class="token operator">:=</span> decoder<span class="token punctuation">.</span><span class="token function">Token</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> err <span class="token operator">==</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> start<span class="token punctuation">,</span> ok <span class="token operator">:=</span> tok<span class="token punctuation">.</span><span class="token punctuation">(</span>xml<span class="token punctuation">.</span>StartElement<span class="token punctuation">)</span><span class="token punctuation">;</span> ok <span class="token operator">&amp;&amp;</span> start<span class="token punctuation">.</span>Name<span class="token punctuation">.</span>Local <span class="token operator">==</span> <span class="token string">"entry"</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> entry Entry
+        <span class="token keyword">if</span> err <span class="token operator">:=</span> decoder<span class="token punctuation">.</span><span class="token function">DecodeElement</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>entry<span class="token punctuation">,</span> start<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> fmt<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"could not unmarshal entry XML: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// Insert entry into a SQLite database so that lookups are fast</span>
+    <span class="token punctuation">}</span>
+    tok<span class="token punctuation">,</span> err <span class="token operator">=</span> decoder<span class="token punctuation">.</span><span class="token function">Token</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> err <span class="token operator">!=</span> io<span class="token punctuation">.</span>EOF <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> fmt<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"could not read from JMdict file: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>There are several other parts of the project where Rust may have been preferable
+(particularly in C interoperability, which came up when creating a custom GNOME
+search provider), but this benefit alone was enough to make me choose Go for the
+project.</p>
+<h1>Using GTK with Go</h1>
+<p>The <a href="https://github.com/gotk3/gotk3"><code>gotk3</code> library</a> provides GTK bindings for
+Go. The library provides support for most basic GTK functionality (including
+most of the things I needed for my application) and is pretty easy to use.
+Setting up a basic application is straightforward:</p>
+<pre class="language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    app<span class="token punctuation">,</span> err <span class="token operator">:=</span> gtk<span class="token punctuation">.</span><span class="token function">ApplicationNew</span><span class="token punctuation">(</span><span class="token string">"com.example.MyApp"</span><span class="token punctuation">,</span> glib<span class="token punctuation">.</span>APPLICATION_FLAGS_NONE<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not create application: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// Standard GTK application signals for application startup.</span>
+    <span class="token comment">// See https://wiki.gnome.org/HowDoI/GtkApplication</span>
+    <span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Connect</span><span class="token punctuation">(</span><span class="token string">"startup"</span><span class="token punctuation">,</span> onStartup<span class="token punctuation">,</span> app<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not connect startup signal: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Connect</span><span class="token punctuation">(</span><span class="token string">"activate"</span><span class="token punctuation">,</span> onActivate<span class="token punctuation">,</span> app<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not connect activate signal: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    os<span class="token punctuation">.</span><span class="token function">Exit</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Args<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">onStartup</span><span class="token punctuation">(</span>app <span class="token operator">*</span>gtk<span class="token punctuation">.</span>Application<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Set up application resources, such as databases, here, but don't show</span>
+    <span class="token comment">// any windows yet. This function may be called when the application is</span>
+    <span class="token comment">// being launched through DBus activation (explained later in this article),</span>
+    <span class="token comment">// such as when getting results for a GNOME search, where it may not be</span>
+    <span class="token comment">// appropriate to show application windows.</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">onActivate</span><span class="token punctuation">(</span>app <span class="token operator">*</span>gtk<span class="token punctuation">.</span>Application<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Set up and show application GUI here.</span>
+<span class="token punctuation">}</span></code></pre>
+<p>In the <code>onActivate</code> function, you could use functions such as
+<code>gtk.ApplicationWindowNew</code> to create an application window and populate it
+programmatically with UI elements. This, however, is rather tedious, especially
+for larger applications. An easier way is to create the UI using
+<a href="https://glade.gnome.org/">Glade</a>, an interactive GUI designer tool for GTK,
+which saves the UI as an XML file that can be loaded in an application using
+<a href="https://developer.gnome.org/gtk3/stable/GtkBuilder.html"><code>GtkBuilder</code></a>. In Go,
+the process looks like this:</p>
+<pre class="language-go"><code class="language-go">builderData<span class="token punctuation">,</span> err <span class="token operator">:=</span> <span class="token function">Asset</span><span class="token punctuation">(</span><span class="token string">"data/gjisho.glade"</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not load GUI builder data: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+builder<span class="token punctuation">,</span> err <span class="token operator">:=</span> gtk<span class="token punctuation">.</span><span class="token function">BuilderNew</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not create application builder: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> err <span class="token operator">:=</span> builder<span class="token punctuation">.</span><span class="token function">AddFromString</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>builderData<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not load data for application builder: %v"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>In the above, I've used <a href="https://github.com/go-bindata/go-bindata"><code>go-bindata</code></a>
+to bundle the <code>gjisho.glade</code> file into the application binary so I can load it
+using <code>Asset</code>. With the <code>builder</code> initialized, you could get UI elements by ID
+using <code>builder.GetObject</code>, handling the error, and then asserting each element
+to its expected type (e.g. <code>*gtk.Label</code>). Since this would get very tedious with
+many UI elements, I wrote a simple function to do it reflectively:</p>
+<pre class="language-go"><code class="language-go"><span class="token keyword">var</span> appWindow <span class="token operator">*</span>gtk<span class="token punctuation">.</span>ApplicationWindow
+<span class="token keyword">var</span> aboutDialog <span class="token operator">*</span>gtk<span class="token punctuation">.</span>AboutDialog
+<span class="token comment">// Other UI elements are also present</span>
+
+<span class="token keyword">var</span> appComponents <span class="token operator">=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token keyword">interface</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">{</span>
+	<span class="token string">"aboutDialog"</span><span class="token punctuation">:</span> <span class="token operator">&amp;</span>aboutDialog<span class="token punctuation">,</span>
+	<span class="token string">"appWindow"</span><span class="token punctuation">:</span>   <span class="token operator">&amp;</span>appWindow<span class="token punctuation">,</span>
+    <span class="token comment">// etc.</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">getAppComponents</span><span class="token punctuation">(</span>builder <span class="token operator">*</span>gtk<span class="token punctuation">.</span>Builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">for</span> name<span class="token punctuation">,</span> ptr <span class="token operator">:=</span> <span class="token keyword">range</span> appComponents <span class="token punctuation">{</span>
+		comp<span class="token punctuation">,</span> err <span class="token operator">:=</span> builder<span class="token punctuation">.</span><span class="token function">GetObject</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+		<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+			log<span class="token punctuation">.</span><span class="token function">Fatalf</span><span class="token punctuation">(</span><span class="token string">"Could not get application component %v: %v"</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token punctuation">}</span>
+		reflect<span class="token punctuation">.</span><span class="token function">ValueOf</span><span class="token punctuation">(</span>ptr<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Elem</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Set</span><span class="token punctuation">(</span>reflect<span class="token punctuation">.</span><span class="token function">ValueOf</span><span class="token punctuation">(</span>comp<span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Then, to initialize all the <code>appComponents</code> to their proper values, I just use
+<code>getAppComponents(builder)</code>. This is similar to the
+<a href="https://pkg.go.dev/github.com/gotk3/gotk3/gtk#Builder.ConnectSignals"><code>Builder.GetSignals</code> method</a>
+provided by gotk3 to connect signals defined in the UI file to Go functions
+defined as values of a <code>map[string]interface{}</code>.</p>
+<p>For the rest of the application, most of the Go bindings translate quite
+naturally from the underlying C API, so the
+<a href="https://developer.gnome.org/gtk3/stable/index.html">main GTK documentation</a>
+remains an invaluable source of information even for Go programmers.</p>
+<p>Here is a screenshot of what the application looks like in action:</p>
+<p><img src="./img/gjisho.png" alt="GJisho showing the definition of the word 辞書 with example
+sentences"></p>
+<h1>Next steps</h1>
+<p>This post covered only the basics of my experience developing GJisho, such as my
+motivation for using Go and how I initially set up the application. The most
+interesting (and challenging) part of the project was enabling it to be used as
+a <a href="https://developer.gnome.org/SearchProvider/">GNOME search provider</a>, which I
+plan to cover in more detail in a future post.</p>
+</article></main><footer>© 2020–2023 Ian Johnson <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">(CC BY 4.0)</a><a rel="me" href="https://mstdn.social/@ianprime0509"><img src="/img/mastodon-logo.svg" alt="Mastodon" class="invert-dark"/></a></footer></body></html>
