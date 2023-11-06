@@ -14,7 +14,7 @@ module.exports = (eleventyConfig) => {
   eleventyConfig.addPassthroughCopy("projects/**/img/*");
 
   eleventyConfig.addFilter("isoDate", (date) =>
-    date.toISOString().substring(0, 10)
+    date.toISOString().substring(0, 10),
   );
   eleventyConfig.addFilter("lastN", (items, n) => items.slice(-n));
 };
