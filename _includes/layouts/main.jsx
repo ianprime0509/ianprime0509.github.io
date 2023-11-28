@@ -32,9 +32,20 @@ export default function render({ children, nav, page, title, today }) {
           <main>{children}</main>
 
           <footer>
-            © 2020–{today.getUTCFullYear()} Ian Johnson{" "}
-            <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
-              (CC BY 4.0)
+            Written by Ian Johnson{" "}
+            <a
+              rel="license"
+              href="https://creativecommons.org/publicdomain/zero/1.0/"
+            >
+              (CC0-1.0)
+            </a>
+            <span class="sep" />
+            <a href="mailto:ian@ianjohnson.dev">
+              <img
+                src="/img/envelope-solid.svg"
+                alt="Email"
+                class="invert-dark"
+              />
             </a>
             <a rel="me" href="https://mstdn.social/@ianprime0509">
               <img
