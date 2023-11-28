@@ -1,0 +1,160 @@
+---
+title: Opting out of the licensing game
+date: 2023-11-27
+---
+
+Software licensing is a contentious subject, and has been debated endlessly for
+decades. There are [hundreds of licenses documented by the SPDX (Software
+Package Data Exchange)](https://spdx.org/licenses/), and surely more in
+existence created ad-hoc for individual projects. Not all of these licenses are
+[free software](https://www.gnu.org/philosophy/free-sw.html) licenses: some,
+such as the [Business Source License](https://spdx.org/licenses/BUSL-1.1.html),
+were written specifically to restrict freedom 0, the freedom to use the software
+for any purpose, in response to the growth of service providers such as AWS
+(Amazon Web Services). This post will restrict itself to considering only free
+software licenses.
+
+I should also preface this discussion by making it clear that I am not a lawyer,
+and due to the complex nature of copyright law (especially when international
+laws are taken into consideration), it is quite possible that I will miss some
+details. Please do not hesitate to contact me (see the footer of this site) if
+you'd like to make a suggestion or correction.
+
+# Traditional software licenses
+
+There are two broad camps within the free software community. In one camp are
+the "copyleft" licenses, such as the [GNU GPL (General Public
+License)](https://www.gnu.org/licenses/gpl-3.0.en.html). The defining
+characteristic of copyleft licenses is their requirement that changes made to
+the software and distributed to users must be made available to those users
+under the same or similar terms. The scope of these conditions varies between
+licenses: some, such as the [MPL (Mozilla Public
+License)](https://spdx.org/licenses/MPL-2.0.html), only requires developers to
+pass along their freedoms for changes made to the original project, while other
+components linked to it may remain non-free, while others, such as the [AGPL
+(Affero General Public License)](https://www.gnu.org/licenses/agpl-3.0.en.html),
+require these freedoms to be passed along for all components of the software
+even for users only interacting with it over a network (not distributed in the
+traditional sense). The core argument made by proponents of these licenses is
+that free software should _stay_ free: using a copyleft license prevents others
+from taking the hard work of free software developers and turning it into
+something that no longer respects the fundamental user freedoms offered by the
+original software.
+
+In the other camp are the "permissive" licenses, such as the [MIT
+License](https://spdx.org/licenses/MIT.html). These licenses do not require
+developers to pass along their original freedoms in derived projects: usually,
+the primary requirement of a permissive license is merely to maintain the
+original license text in copies of the software or derived works. There are
+several reasons why a developer might choose a permissive license, but usually
+it boils down to a desire to allow the software to be adopted as widely as
+possible: even developers of non-free software can incorporate components placed
+under permissive licenses without needing to distribute some or all of their
+resulting software under the same license. Permissive licenses are increasingly
+popular: even back in 2015, [usage data reported by
+GitHub](https://github.blog/2015-03-09-open-source-license-usage-on-github-com/)
+showed a considerable majority of licensed projects using permissive licenses
+(with the MIT license being the most popular at the time).
+
+# The problem
+
+Both types of licenses (copyleft and permissive) have unique advantages and
+disadvantages. [A talk by Rob Landley, creator of the "Zero-Clause BSD"
+License](https://www.youtube.com/watch?v=MkJkyMuBm3g&t=1528s), presents a good
+overview of some of the disadvantages.
+
+On one hand, copyleft licenses have become increasingly fragmented with the
+split between versions 2 and 3 of the GPL, which are not compatible unless the
+author of the software has included the "or any later version" clause in their
+license notice. Several prominent projects, [including
+Linux](https://www.kernel.org/doc/html/latest/process/license-rules.html), are
+licensed under GPL v2 _only_, which makes them incompatible with projects using
+GPL v3 or later. Code cannot be shared between projects under these licenses,
+even though both licenses share similar goals and philosophies.
+
+On the other hand, the license preservation condition of most permissive
+licenses leads to some rather absurd consequences of its own: a glance at the
+"licenses" screen of most commercial products (such as phones, in-car
+entertainment systems, etc.) will reveal dozens of almost identical license
+texts placed side by side, often differing only in the copyright year and
+author. For example, in Arch Linux, [each MIT-licensed project must be
+distributed with a separate license
+file](https://wiki.archlinux.org/title/PKGBUILD#license), installed under
+`/usr/share/licenses`, to comply with the letter of the requirement that the
+license notice must be preserved.
+
+# A solution
+
+In reaction to these issues, and driven by a sense of frustration with software
+licensing as a whole, some users have turned to the [public
+domain](https://en.wikipedia.org/wiki/Public_domain) for a solution. Works in
+the public domain are free of _any restriction whatsoever_: there is not even a
+requirement to provide attribution to the original author when distributing or
+modifying the work. Many people are familiar with the public domain through
+works whose copyright has expired, such as old books, musical compositions, and
+works of art, and there are "licenses" such as the
+[Unlicense](https://spdx.org/licenses/Unlicense.html) and
+[CC0](https://spdx.org/licenses/CC0-1.0.html), which attempt to dedicate works
+whose copyright would otherwise _not_ have expired into the public domain.
+
+These "licenses" are often fraught with various issues, particularly since not
+every country has the same concept of "public domain" or whether it is possible
+for the author of a work to explicitly relinquish the work into the public
+domain. [The Unlicense is known to have several
+issues](https://softwareengineering.stackexchange.com/questions/147111/what-is-wrong-with-the-unlicense),
+and [CC0 has been rejected by some projects, such as
+Fedora](https://lists.fedoraproject.org/archives/list/legal@lists.fedoraproject.org/thread/RRYM3CLYJYW64VSQIXY6IF3TCDZGS6LM/),
+due to concerns about patent wording in the "fallback" license. [Google, for
+example, has restricted usage of such public domain dedicated software within
+the
+company](https://opensource.google/documentation/reference/patching/#forbidden).
+(The reference to Google's policies here is not meant as an endorsement of all
+their thoughts on licensing, but if the goal of permissive licenses is to allow
+wide reuse of software, many other companies and individuals are sure to run
+into similar concerns, hindering adoption.)
+
+So is there any way to achieve the same freedom of completely unrestricted reuse
+offered by the public domain in a context where the public domain cannot be used
+reliably? Rob Landley (cited in the previous section) created the [Zero-Clause
+BSD license (or 0BSD for short)](https://spdx.org/licenses/0BSD.html), which
+strips down a traditional permissive license down to its core essential, the
+grant of the fundamental freedoms of free software:
+
+> Permission to use, copy, modify, and/or distribute this software for any
+> purpose with or without fee is hereby granted.
+
+This single sentence, along with the obnoxious but unfortunately necessary ALL
+CAPS disclaimer of warranty and liability, is the entire license. No requirement
+to copy around the license text, no requirement to include attribution to the
+author, only an unrestricted and irrevocable grant of freedom. And, unlike a
+public domain dedication, this is technically a _license_: the author is not
+actually waiving any copyright over the work, just opting out of all the
+protections that copyright would normally offer. For this reason, it is
+considered less legally problematic than a public domain dedication: Google, for
+example, uses the [0BSD-licensed Toybox tool
+collection](https://github.com/landley/toybox) in Android.
+
+# Opting out of the licensing game
+
+This is why I've chosen the title of this post. When I write software, I want
+others to be maximally empowered to use, inspect, modify, and distribute my
+work. [I don't want anyone to waste precious hours of their life debating
+whether or how they need to include a blob of license text in their project just
+because they copied my
+code](https://github.com/nodejs/readable-stream/pull/238). In this way, my
+philosophy is reflected perhaps most clearly in the
+[WTFPL](https://spdx.org/licenses/WTFPL.html), but I also recognize that the
+copyright system still exists, and I need to operate within its constraints if I
+want others to be comfortable reusing my work.
+
+I have used several licenses for my projects through my years as a developer,
+and this is the perspective I have come to over that time as I have struggled
+with many of the same issues described above (e.g. how to deal with license
+notices when reusing parts of a project). For me, this is the purest form of
+_free software_: software free for all users and all purposes, free from
+restrictions of any kind, dedicated not to my own self promotion or profit but
+for the joy of programming and the benefit of the community. As such, I intend
+to gradually relicense all my own work to the 0BSD license, and my written
+(non-software) content to CC0 (which is still considered fine for non-software
+works) for similar reasons. I want to work towards a world where software and
+creative works as a whole can be maximally free for everyone.
