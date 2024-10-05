@@ -1,0 +1,6 @@
+---
+.title = "Posts",
+.date = @date("2024-10-05"),
+.author = "Ian Johnson",
+.layout = "post-list.shtml",
+---

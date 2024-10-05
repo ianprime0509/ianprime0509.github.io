@@ -1,0 +1,84 @@
+:root {
+  /* https://github.com/tinted-theming/base24-css-etc/blob/master/output/css-variables/base24-one-light.css */
+	--base00: #e7e7e9;
+	--base01: #dfdfe1;
+	--base02: #cacace;
+	--base03: #a0a1a7;
+	--base04: #696c77;
+	--base05: #383a42;
+	--base06: #202227;
+	--base07: #090a0b;
+	--base08: #ca1243;
+	--base09: #c18401;
+	--base0A: #febb2a;
+	--base0B: #50a14f;
+	--base0C: #0184bc;
+	--base0D: #4078f2;
+	--base0E: #a626a4;
+	--base0F: #986801;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  /* https://github.com/tinted-theming/base24-css-etc/blob/master/output/css-variables/base24-one-dark.css */
+	--base00: #282c34;
+	--base01: #3f4451;
+	--base02: #4f5666;
+	--base03: #545862;
+	--base04: #9196a1;
+	--base05: #abb2bf;
+	--base06: #e6e6e6;
+	--base07: #ffffff;
+	--base08: #e05561;
+	--base09: #d18f52;
+	--base0A: #e6b965;
+	--base0B: #8cc265;
+	--base0C: #42b3c2;
+	--base0D: #4aa5f0;
+	--base0E: #c162de;
+	--base0F: #bf4034;
+  }
+}
+
+/* https://github.com/tinted-theming/tinted-vscode/blob/main/templates/base16.mustache */
+
+pre {
+  background: var(--base00);
+  color: var(--base05);
+}
+
+code .comment {
+  color: var(--base03);
+}
+
+code .variable, code .parameter, code .field, code .property {
+  color: var(--base08);
+}
+
+code .tag {
+  color: var(--base08);
+}
+
+code .constant, code .boolean, code .number {
+  color: var(--base09);
+}
+
+code .string {
+  color: var(--base0B);
+}
+
+code .type {
+  color: var(--base0C);
+}
+
+code .function {
+  color: var(--base0D);
+}
+
+code .keyword, code .attribute, code .type.qualifier, code .storageclass, code .include {
+  color: var(--base0E);
+}
+
+code .invalid, code .error {
+  color: var(--base0F);
+}

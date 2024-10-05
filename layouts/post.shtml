@@ -1,0 +1,7 @@
+<extend template="base.shtml">
+<title id="title" :text="$page.title"></title>
+<main id="main">
+  <h1 :text="$page.title"></h1>
+  <div class="subtitle" :text="$page.date.format('January 02, 2006')"></div>
+  <ctx :html="$page.content()"></ctx>
+</main>

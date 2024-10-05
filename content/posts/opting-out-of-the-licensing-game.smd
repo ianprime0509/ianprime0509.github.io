@@ -1,6 +1,8 @@
 ---
-title: Opting out of the licensing game
-date: 2023-11-27
+.title = "Opting out of the licensing game",
+.date = @date("2023-11-27"),
+.author = "Ian Johnson",
+.layout = "post.shtml",
 ---
 
 Software licensing is a contentious subject, and has been debated endlessly for
@@ -20,7 +22,7 @@ laws are taken into consideration), it is quite possible that I will miss some
 details. Please do not hesitate to contact me (see the footer of this site) if
 you'd like to make a suggestion or correction.
 
-# Traditional software licenses
+## Traditional software licenses
 
 There are two broad camps within the free software community. In one camp are
 the "copyleft" licenses, such as the [GNU GPL (General Public
@@ -56,7 +58,7 @@ GitHub](https://github.blog/2015-03-09-open-source-license-usage-on-github-com/)
 showed a considerable majority of licensed projects using permissive licenses
 (with the MIT license being the most popular at the time).
 
-# The problem
+## The problem
 
 Both types of licenses (copyleft and permissive) have unique advantages and
 disadvantages. [A talk by Rob Landley, creator of the "Zero-Clause BSD"
@@ -83,7 +85,7 @@ file](https://wiki.archlinux.org/title/PKGBUILD#license), installed under
 `/usr/share/licenses`, to comply with the letter of the requirement that the
 license notice must be preserved.
 
-# A solution
+## A solution
 
 In reaction to these issues, and driven by a sense of frustration with software
 licensing as a whole, some users have turned to the [public
@@ -134,7 +136,7 @@ considered less legally problematic than a public domain dedication: Google, for
 example, uses the [0BSD-licensed Toybox tool
 collection](https://github.com/landley/toybox) in Android.
 
-# Opting out of the licensing game
+## Opting out of the licensing game
 
 This is why I've chosen the title of this post. When I write software, I want
 others to be maximally empowered to use, inspect, modify, and distribute my

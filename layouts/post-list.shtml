@@ -1,0 +1,12 @@
+<extend template="base.shtml">
+<title id="title" :text="$page.title"></title>
+<main id="main">
+  <h1 :text="$page.title"></h1>
+  <ctx :html="$page.content()"></ctx>
+  <ul class="post-list" :loop="$page.subpages()">
+    <li>
+      <a href="$loop.it.link()" :text="$loop.it.title"></a>
+      <span :text="$loop.it.date.format('January 02, 2006')"></span>
+    </li>
+  </ul>
+</main>

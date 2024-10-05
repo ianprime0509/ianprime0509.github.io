@@ -1,12 +1,13 @@
 ---
-title: "GUI with Go: writing a GNOME search provider"
-date: 2020-12-05
+.title = "GUI with Go: writing a GNOME search provider",
+.date = @date("2020-12-05"),
+.author = "Ian Johnson",
+.layout = "post.shtml",
 ---
 
 _This article is the second in a pair of articles covering my experience using
 Go to develop a GNOME application. If you are interested in the motivation
-behind the project and the initial setup, see the
-[first article](./gui-with-go.html)._
+behind the project and the initial setup, see the [first article](gui-with-go)._
 
 One of the most useful features of the GNOME desktop is its integrated,
 universal search feature: from the "Activities" menu, which can be opened by
@@ -22,27 +23,27 @@ quickly, without even having to open the application. For example, see the
 screenshot below, where I've searched for 日本語 using GNOME search:
 
 ![GNOME search results for 日本語, showing several results provided by
-GJisho](./img/gjisho-search.png)
+GJisho](gjisho-search.png)
 
 If I click or press enter on one of the results, GJisho will open a window and
 navigate directly to the word, where I can get more details on its definition,
 kanji usage and examples:
 
 ![GJisho after clicking on the GNOME search result for 日本
-語](./img/gjisho-after-navigation.png)
+語](gjisho-after-navigation.png)
 
 This feature is so useful that I personally never open GJisho manually: I always
 open it through a search query, since it's built right into the desktop and very
 easy to access.
 
-# Implementing a GNOME search provider
+## Implementing a GNOME search provider
 
 The
 [GNOME documentation for search providers](https://developer.gnome.org/SearchProvider/)
 gives an overview of what's needed to integrate search provider functionality
 into an application.
 
-## D-Bus activation
+### D-Bus activation
 
 First, the application must be
 [D-Bus activatable](https://wiki.gnome.org/HowDoI/DBusApplicationLaunching).
@@ -143,7 +144,7 @@ DBusActivatable=true
 With those two files in place, the application is D-Bus activatable, and we are
 ready to move on to implementing the search provider interface.
 
-## Search provider interface
+### Search provider interface
 
 As the
 [GNOME search provider documentation](https://developer.gnome.org/SearchProvider/)
@@ -192,7 +193,7 @@ To avoid a lot of boilerplate GDBus code, I used the `gdbus-codegen` tool (which
 comes with GDBus) to generate some "skeleton" C files that set up a wrapper for
 our implementation:
 
-```shell
+```sh
 gdbus-codegen \
     --c-namespace Shell \
     --generate-c-code shell-search-provider2 \
@@ -204,7 +205,7 @@ Running that command generates two files, `shell-search-provider2.h` and
 `shell-search-provider2.c`, which provide the skeleton for the search provider
 interface.
 
-### Using the search provider skeleton
+#### Using the search provider skeleton
 
 I'm certainly not a GTK or GLib expert, so I used the example code on the search
 provider documentation page along with the
@@ -349,7 +350,7 @@ All put together, the sequence of events is as follows:
 7. Finally, the skeleton implementation takes care of using GDBus to return the
    results to the application that originally called the D-Bus method.
 
-### Registering the skeleton with the application
+#### Registering the skeleton with the application
 
 With the search logic implemented in `GJishoSearchProvider`, the next step was
 to create a subclass of `GtkApplication` and hook up the skeleton in the
@@ -435,7 +436,7 @@ gjisho_application_dbus_unregister(GApplication *application, GDBusConnection *c
 }
 ```
 
-### Using the custom application class from Go
+#### Using the custom application class from Go
 
 Finally, I needed to replace the call to `gtk.ApplicationNew` in the GUI
 initialization code with a call to the C function `gjisho_application_new` to
@@ -487,7 +488,7 @@ func applicationNew() (*application, error) {
 Finally, I replaced the call to `gtk.ApplicationNew` with a call to
 `applicationNew`, completing the necessary search provider code.
 
-### Search provider INI file
+#### Search provider INI file
 
 The final step in integrating GJisho's new search provider functionality with
 GNOME was to install another special file, this one informing GNOME of the
@@ -505,7 +506,7 @@ ObjectPath=/xyz/ianjohnson/GJisho/SearchProvider
 Version=2
 ```
 
-# Conclusion
+## Conclusion
 
 GJisho's GNOME search integration is one of its most useful features to me, and
 one that I'm very glad I added. The implementation, however, required a lot of

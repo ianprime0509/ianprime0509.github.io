@@ -1,14 +1,16 @@
 ---
-title: "GUI with Go: motivation and initial setup"
-date: 2020-11-21
+.title = "GUI with Go: motivation and initial setup",
+.date = @date("2020-11-21"),
+.author = "Ian Johnson",
+.layout = "post.shtml",
 ---
 
 _This post is the first in a pair of articles covering my experience using Go to
 develop a GNOME application. There is a
-[second article](./gui-with-go-search-provider.html) covering how I integrated
+[second article](gui-with-go-search-provider) covering how I integrated
 my application with GNOME search._
 
-# Project idea and motivation
+## Project idea and motivation
 
 One of my recent projects is [GJisho](https://github.com/ianprime0509/gjisho), a
 Japanese-English dictionary application for GNOME. I like GNOME, and I wanted to
@@ -33,7 +35,7 @@ With that out of the way, and with the GUI toolkit (GTK) chosen by my target
 platform (GNOME), the last major question before starting development was which
 language to use for the project.
 
-# Why Go?
+## Why Go?
 
 GTK has [bindings](https://www.gtk.org/docs/language-bindings/) for many
 languages. While evaluating the options, I was able to rule most of them out
@@ -131,7 +133,7 @@ There are several other parts of the project where Rust may have been preferable
 search provider), but this benefit alone was enough to make me choose Go for the
 project.
 
-# Using GTK with Go
+## Using GTK with Go
 
 The [`gotk3` library](https://github.com/gotk3/gotk3) provides GTK bindings for
 Go. The library provides support for most basic GTK functionality (including
@@ -238,9 +240,9 @@ remains an invaluable source of information even for Go programmers.
 Here is a screenshot of what the application looks like in action:
 
 ![GJisho showing the definition of the word 辞書 with example
-sentences](./img/gjisho.png)
+sentences](gjisho.png)
 
-# Next steps
+## Next steps
 
 This post covered only the basics of my experience developing GJisho, such as my
 motivation for using Go and how I initially set up the application. The most

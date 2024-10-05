@@ -1,6 +1,8 @@
 ---
-title: Zero-cost bindings with Zig
-date: 2023-05-07
+.title = "Zero-cost bindings with Zig",
+.date = @date("2023-05-07"),
+.author = "Ian Johnson",
+.layout = "post.shtml",
 ---
 
 Well, it's been two and a half years since my last blog post, but now seems like
@@ -13,7 +15,7 @@ This post will dive into some of the ways Zig can improve the expressiveness of
 C code without adding any runtime overhead (hence the title, "zero-cost
 bindings").
 
-# Getting started: a simple GTK example
+## Getting started: a simple GTK example
 
 To start with, let's set up a simple GTK example project. I'll be using the
 latest Zig master version at the time of writing (`0.11.0-dev.3000+d71a43ec2`).
@@ -141,7 +143,7 @@ build system to build real-world C projects, such as
 using the Zig language to provide abstractions over C APIs, so let's press on
 and start writing some Zig code...
 
-# Writing it in Zig: a first attempt
+## Writing it in Zig: a first attempt
 
 Here's `hello.zig`, a fairly direct conversion of the original `hello.c` code:
 
@@ -222,7 +224,7 @@ The application still builds and runs successfully with `zig build run`. The
 `build.zig` file will remain unchanged from this point on, but `hello.zig` can
 be greatly improved.
 
-# Improving the bindings: namespaces and transparent wrappers
+## Improving the bindings: namespaces and transparent wrappers
 
 Unlike C, Zig allows structs to contain declarations such as constants and
 functions. This means that a C function such as `gtk_window_set_title` could be
@@ -398,7 +400,7 @@ look more like idiomatic Zig code, but there are still quite a few `@ptrCast`s.
 The call to `g_print` in `printHello` has also been replaced with
 `std.debug.print`, but that isn't related to the binding changes.
 
-# Subclass methods using mixins
+## Subclass methods using mixins
 
 How do we get rid of the `@ptrCast`s? The reason for many of them is that GTK
 uses the [GObject type system](https://docs.gtk.org/gobject/concepts.html),
@@ -643,7 +645,7 @@ This also demonstrates the reason why we needed to fix the return types of the
 example, we still wouldn't be able to call `window.setTitle("Window")` or other
 window-specific methods without a `@ptrCast`.
 
-# Better flags and enums
+## Better flags and enums
 
 We can do even better with our bindings by refining the flag and enum types
 which are currently lazily aliased to `c_uint` in our namespaces. To avoid
@@ -740,7 +742,7 @@ pub fn main() void {
 
 The enum and flag parameters definitely look a lot cleaner in this version.
 
-# What's next?
+## What's next?
 
 One really neat aspect of the bindings written through the examples above is
 that they are zero-cost: the bindings expose the underlying GTK functions
@@ -767,7 +769,7 @@ time of writing, it is not yet ready to use (it depends on some unmerged Zig PRs
 related to the package manager), but I hope to share it with the community soon
 🚀
 
-# Addendum: the final `hello.zig` file
+## Addendum: the final `hello.zig` file
 
 Here's the final `hello.zig` file, with all of the enhancements described in the
 sections above:
