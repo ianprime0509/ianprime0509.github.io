@@ -11,6 +11,7 @@ pub fn build(b: *std.Build) !void {
         .static_assets = &.{
             // Used by GitHub Pages
             "CNAME",
+            "fonts/Inconsolata-VariableFont_wdth,wght.ttf",
             "fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
             "fonts/Inter-VariableFont_opsz,wght.ttf",
         },
