@@ -160,3 +160,7 @@ ul.post-list > li {
   display: flex;
   justify-content: space-between;
 }
+
+ul.post-list > li > time {
+  font-feature-settings: "tnum";
+}
