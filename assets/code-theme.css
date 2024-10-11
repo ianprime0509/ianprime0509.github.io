@@ -47,16 +47,24 @@ pre {
   color: var(--base05);
 }
 
+code .tag,
+code .keyword,
+code .attribute,
+code .conditional,
+code .type.qualifier,
+code .storageclass,
+code .include {
+  font-weight: bold;
+}
+
 code .comment {
   color: var(--base03);
   font-style: italic;
 }
 
-code .tag {
-  color: var(--base08);
-}
-
-code .constant, code .boolean, code .number {
+code .constant,
+code .boolean,
+code .number {
   color: var(--base09);
 }
 
@@ -66,9 +74,6 @@ code .string {
 
 code .builtin {
   color: var(--base0C);
-}
-
-code .keyword, code .attribute, code .conditional, code .type.qualifier, code .storageclass, code .include {
   font-weight: bold;
 }
 
