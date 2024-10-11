@@ -1,46 +1,46 @@
 :root {
-  /* https://github.com/tinted-theming/base24-css-etc/blob/master/output/css-variables/base24-one-light.css */
-	--base00: #e7e7e9;
-	--base01: #dfdfe1;
-	--base02: #cacace;
-	--base03: #a0a1a7;
-	--base04: #696c77;
-	--base05: #383a42;
-	--base06: #202227;
-	--base07: #090a0b;
-	--base08: #ca1243;
-	--base09: #c18401;
-	--base0A: #febb2a;
-	--base0B: #50a14f;
-	--base0C: #0184bc;
-	--base0D: #4078f2;
-	--base0E: #a626a4;
-	--base0F: #986801;
+  /* https://github.com/tinted-theming/schemes/blob/spec-0.11/base16/atelier-seaside-light.yaml */
+  --base00: #f4fbf4;
+  --base01: #cfe8cf;
+  --base02: #8ca68c;
+  --base03: #809980;
+  --base04: #687d68;
+  --base05: #5e6e5e;
+  --base06: #242924;
+  --base07: #131513;
+  --base08: #e6193c;
+  --base09: #87711d;
+  --base0A: #98981b;
+  --base0B: #29a329;
+  --base0C: #1999b3;
+  --base0D: #3d62f5;
+  --base0E: #ad2bee;
+  --base0F: #e619c3;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-  /* https://github.com/tinted-theming/base24-css-etc/blob/master/output/css-variables/base24-one-dark.css */
-	--base00: #282c34;
-	--base01: #3f4451;
-	--base02: #4f5666;
-	--base03: #545862;
-	--base04: #9196a1;
-	--base05: #abb2bf;
-	--base06: #e6e6e6;
-	--base07: #ffffff;
-	--base08: #e05561;
-	--base09: #d18f52;
-	--base0A: #e6b965;
-	--base0B: #8cc265;
-	--base0C: #42b3c2;
-	--base0D: #4aa5f0;
-	--base0E: #c162de;
-	--base0F: #bf4034;
+    /* https://github.com/tinted-theming/schemes/blob/spec-0.11/base16/atelier-seaside.yaml */
+    --base00: #131513;
+    --base01: #242924;
+    --base02: #5e6e5e;
+    --base03: #687d68;
+    --base04: #809980;
+    --base05: #8ca68c;
+    --base06: #cfe8cf;
+    --base07: #f4fbf4;
+    --base08: #e6193c;
+    --base09: #87711d;
+    --base0A: #98981b;
+    --base0B: #29a329;
+    --base0C: #1999b3;
+    --base0D: #3d62f5;
+    --base0E: #ad2bee;
+    --base0F: #e619c3;
   }
 }
 
-/* https://github.com/tinted-theming/tinted-vscode/blob/main/templates/base16.mustache */
+/* See https://github.com/tinted-theming/home/blob/main/styling.md#specific-colours-and-their-usages */
 
 pre {
   background: var(--base00);
@@ -49,10 +49,7 @@ pre {
 
 code .comment {
   color: var(--base03);
-}
-
-code .variable, code .parameter, code .field, code .property {
-  color: var(--base08);
+  font-style: italic;
 }
 
 code .tag {
@@ -67,16 +64,12 @@ code .string {
   color: var(--base0B);
 }
 
-code .type {
+code .builtin {
   color: var(--base0C);
 }
 
-code .function {
-  color: var(--base0D);
-}
-
-code .keyword, code .attribute, code .type.qualifier, code .storageclass, code .include {
-  color: var(--base0E);
+code .keyword, code .attribute, code .conditional, code .type.qualifier, code .storageclass, code .include {
+  font-weight: bold;
 }
 
 code .invalid, code .error {
