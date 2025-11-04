@@ -1,0 +1,14 @@
+Site {
+    .title = "Ian Johnson",
+    .host_url = "https://ianjohnson.dev",
+    .content_dir_path = "content",
+    .layouts_dir_path = "layouts",
+    .assets_dir_path = "assets",
+    .static_assets = [
+        // Used by GitHub Pages
+        "CNAME",
+        "fonts/Inconsolata-VariableFont_wdth,wght.ttf",
+        "fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
+        "fonts/Inter-VariableFont_opsz,wght.ttf",
+    ],
+}

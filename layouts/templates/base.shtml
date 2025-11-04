@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="$site.asset('favicon.png').link()">
-    <link rel="icon" type="image/svg+xml" href="$site.asset('favicon.svg').link()">
-    <link rel="stylesheet" href="$site.asset('index.css').link()">
-    <link rel="stylesheet" href="$site.asset('code-theme.css').link()">
-    <title id="title">
-      Ian Johnson -
-      <super>
-    </title>
-  </head>
-  <body>
-    <header>
-      <span :text="$site.title"></span>
-      <nav>
-        <ul :loop="$site.pages('index', 'projects', 'posts')">
-          <li>
-            <span :if="$loop.it.isCurrent()" :text="$loop.it.title"></span>
-            <a :if="$loop.it.isCurrent().not()" href="$loop.it.link()" :text="$loop.it.title"></a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <main id="main">
-      <super>
-    </main>
-    <footer>
-      Written by Ian Johnson
-      <a
-        href="https://creativecommons.org/publicdomain/zero/1.0/"
-        target="_blank"
-        rel="license noopener noreferrer"
-      ><img class="icon" alt="CC0-1.0" src="$site.asset('cc-zero.svg').link()"></a>
-    </footer>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="icon" type="image/png" href="$site.asset('favicon.png').link()">
+		<link rel="icon" type="image/svg+xml" href="$site.asset('favicon.svg').link()">
+		<link rel="stylesheet" href="$site.asset('index.css').link()">
+		<link rel="stylesheet" href="$site.asset('code-theme.css').link()">
+		<title id="title">
+			Ian Johnson -
+			<super>
+		</title>
+	</head>
+	<body>
+		<header>
+			<span :text="$site.title"></span>
+			<nav>
+				<ul :loop="$site.pages('', 'projects', 'posts')">
+					<li>
+						<span :if="$loop.it.isCurrent()" :text="$loop.it.title"></span>
+						<a :if="$loop.it.isCurrent().not()" href="$loop.it.link()" :text="$loop.it.title"></a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		<main id="main">
+			<super>
+		</main>
+		<footer>
+			Written by Ian Johnson
+			<a href="https://creativecommons.org/publicdomain/zero/1.0/"
+			   target="_blank"
+			   rel="license noopener noreferrer"
+			><img class="icon" alt="CC0-1.0" src="$site.asset('cc-zero.svg').link()"></a>
+		</footer>
+	</body>
 </html>
