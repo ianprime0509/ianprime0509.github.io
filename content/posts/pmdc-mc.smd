@@ -1,0 +1,153 @@
+---
+.title = "PMDC, a PC-98 assembly to C translation project",
+.date = @date("2025-11-04"),
+.author = "Ian Johnson",
+.layout = "post.shtml",
+---
+
+This post is about the creation of
+[pmdc](https://github.com/ianprime0509/pmdc), my translation of the music
+compiler program from KAJA's [PMD](http://www5.airnet.ne.jp/kajapon/tool.html),
+a popular music driver for the NEC PC-98 series of Japanese computers. Feel free
+to check it out and compile some retro tunes, or read on for some background.
+
+---
+
+About a year or so ago, I started getting into [the Touhou
+Project](https://en.wikipedia.org/wiki/Touhou_Project), a popular bullet hell
+game series with a large impact on popular internet culture. Modern Touhou
+games are, naturally, developed and released for Windows, but the first five
+games in the series were developed for the [NEC
+PC-98](https://en.wikipedia.org/wiki/PC-98), a series of Japanese computers
+running DOS.
+
+One of the most acclaimed parts of Touhou is its music, composed by the series'
+sole developer, ZUN. I quickly became interested in the music of the original
+PC-98 Touhou games, and I wanted to try making some myself. So how does one
+write music for the PC-98?
+
+## PC-98 music and PMD MML
+
+There were several possible different sound configurations for the PC-98, but
+the most popular one uses the [Yamaha
+YM2608](https://en.wikipedia.org/wiki/Yamaha_YM2608), also known as the OPNA, a
+powerful sound chip offering six channels of four-operator FM synthesis, three
+channels of square wave or noise, six hard-coded drum sample channels, and one
+ADPCM sample playback channel. The sound cards featuring the OPNA also had
+hardware for CD-quality PCM audio, but ZUN did not use this hardware or the
+OPNA's ADPCM channel for the PC-98 Touhou games' music.
+
+Today, there are several good ways to write authentic PC-98 music.
+[BambooTracker](https://github.com/BambooTracker/BambooTracker) is a tracker
+focused on the OPNA, and the [Furnace
+tracker](https://github.com/tildearrow/furnace) also supports it (along with a
+zillion other sound chips). But both of these programs are modern creations:
+when ZUN wrote the music for his PC-98 Touhou games, he used the [Professional
+Music Driver (PMD)](http://www5.airnet.ne.jp/kajapon/tool.html) written by
+Masahiro Kajihara, known as KAJA.[^1]
+
+[^1]: Evidently, ZUN used a different sound driver, MDRV98, for the first game,
+rather than PMD. However, he translated it to PMD later when including it in
+the music room for Mystic Square, the fifth game.
+
+Music for PMD is written using MML ("Music Macro Language"), which is a
+text-based format. Here's a simple example of MML which plays a C major scale
+using one of the FM instruments from KAJA's EFFEC.FF instrument bank:
+
+```
+#Title C major scale
+#Option /v/c
+
+@  0   4   7   =EPiano
+  28  12   0   3   4  40   1  10  -3   0
+  26   8   4   7   3   0   1   2  -3   0
+  28  12   0   3   4  40   1  10  -3   0
+  26   8   4   7   3   0   1   2  -3   0
+
+A @0 v13 o4 cdefgab>c c<bagfedc
+```
+
+A PMD MML file is compiled into a "module" using the program MC ("music
+compiler"). The module can then be played back by the PMD driver itself.
+
+There are several players available which combine the functionality of the PMD
+driver (translated to run on modern computers) and an emulator for the OPNA
+sound chip to make playing these module files simple. The one I primarily use,
+which also comes with a recreation of a period music visualizer, is
+[98fmplayer](https://github.com/myon98/98fmplayer).
+
+For compiling MML source code to modules, however, there wasn't a native,
+cross-platform port of MC available for me to use. There is
+[PMDDotNet](https://github.com/kuma4649/PMDDotNET), which is Windows-only as
+far as I can tell, but for me as a Linux user, my best option seemed to be
+[projmd](https://github.com/OPNA2608/projmd), which provides a convenient setup
+for running MC through DOSBox. I used this when starting out, but I couldn't
+help feeling like there should be a better way...
+
+## Translating MC to C
+
+The best solution would be if MC could be translated to a modern, portable
+language and then compiled to a native executable that just runs, without a
+heavy emulation layer on top. This is exactly what I set out to do.
+Fortunately, KAJA released the source code for PMD (including MC) back in 2019,
+making this much easier than the alternative of reverse engineering the
+original DOS binary. Unfortunately, the program was originally written in
+16-bit x86 assembly language, which is unportable.
+
+I decided to take this original assembly code and translate it into C, at the
+same time abstracting away any DOS-specific system functionality so it could be
+reimplemented portably. In translating the original code, I deliberately kept as
+close as possible to the original, preserving the logic as exactly as possible.
+The translated code has comments referring back to line numbers in the original,
+and the names of functions are taken from labels in the assembly.
+
+Overall, this wasn't as difficult to do as I'd expected: the assembly was
+written in a pretty straightforward way that translated well to C, although
+there were several times when I puzzled over a small section for over half an
+hour, just trying to decipher a particularly thorny mess of branching jumps.
+There was also a somewhat unintuitive use of branching mnemonics: rather than
+using comparison-specific mnemonics such as `jae` (jump if above or equal), the
+original author consistently used `jnc` (jump if not carry), and so on. These
+mnemonics are exactly equivalent, but it added an extra layer of mandatory
+thought ("`jnc` means no carry, so it's the same as `>=`") on top of the
+existing challenge of working through the code.
+
+Another notable challenge was, of course, the _human_ language of the code,
+namely, Japanese. I don't speak Japanese, so I had to make frequent use of
+Google Translate to make sense of any comments in the code. Even the names of
+labels were often derived from Japanese words, which I preserved as-is in my
+translation. One of the first confusing names I came across was `kankyo_seg`...
+it wasn't until reading an unrelated translated comment that I learned that
+環境変数 ("kankyou hensuu") is Japanese for "environment variable", and this was
+referring to the segment of memory where DOS stored environment variables.
+
+I'm pretty happy with the system interface I eventually came up with. There were
+some slight adjustments needed in the logic to make it easier to use modern C
+APIs, such as null-terminated strings (for printing, [DOS INT
+21,9](https://www.stanislavs.org/helppc/int_21-9.html) expected a `$`-terminated
+string), but in the end, [every DOS interrupt basically boiled down to one or
+two standard C library function
+calls](https://github.com/ianprime0509/pmdc/blob/main/src/mc/mc_stdio.c).
+
+## Conclusion and further work
+
+I'm pretty happy with the way the project turned out, and I've been enjoying
+being able to compile my music without relying on DOSBox. Thanks to my design
+decisions of storing all global state in a struct and abstracting the underlying
+system functionality into pluggable virtual function calls, I'm even able to use
+the translated MC as a library: [my fork of
+98fmplayer](https://github.com/ianprime0509/98fmplayer) contains a command-line
+program which can compile and play an MML file directly in a single step, making
+for a much easier feedback loop between writing music and listening to it.
+
+As the project's name suggests, my original vision was to eventually translate
+the other parts of the PMD distribution, such as the driver itself. I may
+eventually do that too, but at least for now, I don't have as much motivation as
+I did for the MC translation. This is mostly because portable translations such
+as 98fmplayer already exist, so translating it again wouldn't accomplish much.
+It's also a decent amount longer than MC, and has a lot more complexity due to
+the technical details of trying to work with hardware on so many different
+supported sound cards and configurations.
+
+My next project will actually use music composed with these tools, assuming I
+don't get side-tracked by some other shiny idea 😄
