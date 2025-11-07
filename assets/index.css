@@ -141,6 +141,10 @@ footer {
   border-top: 1px solid var(--text-color);
 }
 
+footer .icon {
+  max-height: 1cap;
+}
+
 .icon {
   height: 1em;
 }
